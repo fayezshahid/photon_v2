@@ -8,13 +8,40 @@ import { PhotoCardComponent } from '../photocard/photocard.component';
   standalone: true,
   imports: [CommonModule, FormsModule, PhotoCardComponent],
   templateUrl: './gallery.component.html',
-  styleUrl: './gallery.component.css'
+  styleUrl: './gallery.component.css',
 })
 export class GalleryComponent {
   photoCards = [
-    { id: 1, name: 'Photo 1', url: 'favicon.webp', date: '6/9/2024, 4:48:51 PM', size: 10300, isFavourite: false, isArchived: false, isDeleted: false },
-    { id: 2, name: 'Photo 2', url: 'favicon.webp', date: '6/9/2024, 4:48:52 PM', size: 11111, isFavourite: false, isArchived: false, isDeleted: false },
-    { id: 3, name: 'Photo 3', url: 'favicon.webp', date: '6/9/2024, 4:48:53 PM', size: 20000, isFavourite: false, isArchived: false, isDeleted: false }
+    {
+      id: 1,
+      name: 'Photo 1',
+      url: 'favicon.webp',
+      date: '6/9/2024, 4:48:51 PM',
+      size: 10300,
+      isFavourite: false,
+      isArchived: false,
+      isDeleted: false,
+    },
+    {
+      id: 2,
+      name: 'Photo 2',
+      url: 'favicon.webp',
+      date: '6/9/2024, 4:48:52 PM',
+      size: 11111,
+      isFavourite: false,
+      isArchived: false,
+      isDeleted: false,
+    },
+    {
+      id: 3,
+      name: 'Photo 3',
+      url: 'favicon.webp',
+      date: '6/9/2024, 4:48:53 PM',
+      size: 20000,
+      isFavourite: false,
+      isArchived: false,
+      isDeleted: false,
+    },
     // Add more photo objects as needed
   ];
 
@@ -24,7 +51,7 @@ export class GalleryComponent {
   order: string = 'desc';
 
   constructor() {
-    this.arrangeBy(this.arrange, this.order)
+    this.arrangeBy(this.arrange, this.order);
   }
 
   upload() {
@@ -33,7 +60,7 @@ export class GalleryComponent {
 
     const name = formData.get('name') as string;
     const image = formData.get('image') as File;
-    console.log(image)
+    // console.log(image)
 
     const newPhoto = {
       id: this.photoCards.length + 1,
@@ -43,9 +70,10 @@ export class GalleryComponent {
       size: image.size,
       isFavourite: false,
       isArchived: false,
-      isDeleted: false
+      isDeleted: false,
     };
     this.photoCards.push(newPhoto);
+    this.arrangeBy(this.arrange, this.order);
   }
 
   arrangeBy(arrange: string, order: string) {
@@ -76,7 +104,7 @@ export class GalleryComponent {
     if (input.files && input.files[0]) {
       // this.image = input.files[0];
       const reader = new FileReader();
-      reader.onload = e => {
+      reader.onload = (e) => {
         if (e.target && e.target.result) {
           this.imageUrl = e.target.result;
           // event.target.value = '';
@@ -88,8 +116,7 @@ export class GalleryComponent {
   }
 
   removeImage() {
-    (document.getElementById('image') as HTMLInputElement).value = '';
+    // (document.getElementById('image') as HTMLInputElement).value = '';
     this.imageUrl = null;
   }
-
 }

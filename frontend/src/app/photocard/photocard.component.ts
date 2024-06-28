@@ -1,17 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Input } from '@angular/core';
+import { Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-photocard',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './photocard.component.html',
-  styleUrl: './photocard.component.css'
+  styleUrl: './photocard.component.css',
 })
 export class PhotoCardComponent {
   @Input() photo: any;
+  @Output() imageEditted = new EventEmitter<void>();
   imageUrl: string | ArrayBuffer | null = null;
 
   ngOnInit() {
@@ -20,14 +21,20 @@ export class PhotoCardComponent {
   }
 
   edit() {
-    const form = document.getElementById('form' + this.photo.id) as HTMLFormElement;
+    const form = document.getElementById(
+      'form' + this.photo.id
+    ) as HTMLFormElement;
     const formData = new FormData(form);
     const name = formData.get('name') as string;
     const image = formData.get('image') as File;
 
     this.photo.name = name;
-    this.photo.url = image.name;
-    this.photo.size = image.size;
+    if (image) {
+      this.photo.url = image.name;
+      this.photo.size = image.size;
+    }
+
+    this.imageEditted.emit();
 
     // console.log(this.photo);
   }
@@ -37,7 +44,7 @@ export class PhotoCardComponent {
     if (input.files && input.files[0]) {
       // this.image = input.files[0];
       const reader = new FileReader();
-      reader.onload = e => {
+      reader.onload = (e) => {
         if (e.target && e.target.result) {
           this.imageUrl = e.target.result;
           // console.log(this.imageUrl);
