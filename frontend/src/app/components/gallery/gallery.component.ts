@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PhotoCardComponent } from '../photocard/photocard.component';
+import { PhotoService, Photo } from '../../services/photo/photo.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-gallery',
@@ -11,47 +13,31 @@ import { PhotoCardComponent } from '../photocard/photocard.component';
   styleUrl: './gallery.component.css',
 })
 export class GalleryComponent {
-  photoCards = [
-    {
-      id: 1,
-      name: 'Photo 1',
-      url: 'favicon.webp',
-      date: '6/9/2024, 4:48:51 PM',
-      size: 10300,
-      isFavourite: false,
-      isArchived: false,
-      isDeleted: false,
-    },
-    {
-      id: 2,
-      name: 'Photo 2',
-      url: 'favicon.webp',
-      date: '6/9/2024, 4:48:52 PM',
-      size: 11111,
-      isFavourite: false,
-      isArchived: false,
-      isDeleted: false,
-    },
-    {
-      id: 3,
-      name: 'Photo 3',
-      url: 'favicon.webp',
-      date: '6/9/2024, 4:48:53 PM',
-      size: 20000,
-      isFavourite: false,
-      isArchived: false,
-      isDeleted: false,
-    },
-    // Add more photo objects as needed
-  ];
+  photoCards: Photo[] = [];
 
   imageUrl: string | ArrayBuffer | null = null;
 
   arrange: string = 'date';
   order: string = 'desc';
 
-  constructor() {
-    this.arrangeBy(this.arrange, this.order);
+  private subscription: Subscription = new Subscription();
+
+  constructor(private photoService: PhotoService) {}
+
+  ngOnInit(): void {
+    this.loadActivePhotos();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  loadActivePhotos(): void {
+    this.subscription.add(
+      this.photoService.getActivePhotos().subscribe(photos => {
+        this.photoCards = this.photoService.sortPhotos(photos, this.arrange, this.order);
+      })
+    );
   }
 
   upload() {
@@ -60,10 +46,8 @@ export class GalleryComponent {
 
     const name = formData.get('name') as string;
     const image = formData.get('image') as File;
-    // console.log(image)
 
-    const newPhoto = {
-      id: this.photoCards.length + 1,
+    const newPhoto: Omit<Photo, 'id'> = {
       name: name,
       url: image.name,
       date: new Date().toLocaleString(),
@@ -71,32 +55,18 @@ export class GalleryComponent {
       isFavourite: false,
       isArchived: false,
       isDeleted: false,
+      albumId: null,
     };
-    this.photoCards.push(newPhoto);
-    this.arrangeBy(this.arrange, this.order);
+
+    this.photoService.addPhoto(newPhoto);
+    this.removeImage();
+    form.reset();
   }
 
   arrangeBy(arrange: string, order: string) {
-    console.log(order);
     this.arrange = arrange;
     this.order = order;
-    if (arrange === 'name') {
-      this.photoCards.sort((a, b) => {
-        if (order == 'asc') {
-          return a.name.localeCompare(b.name);
-        } else {
-          return b.name.localeCompare(a.name);
-        }
-      });
-    } else if (arrange === 'date') {
-      this.photoCards.sort((a, b) => {
-        if (order == 'asc') {
-          return a.date.localeCompare(b.date);
-        } else {
-          return b.date.localeCompare(a.date);
-        }
-      });
-    }
+    this.photoCards = this.photoService.sortPhotos(this.photoCards, arrange, order);
   }
 
   showImage(event: Event) {

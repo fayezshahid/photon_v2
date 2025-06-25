@@ -1,4 +1,3 @@
-<!-- <div class="p-4 mt-5" style="width:85%"> -->
 <div class="d-flex justify-content-between">
   <div class="dropdown d-flex">
     <div>
@@ -11,7 +10,7 @@
       >
         Arrange by
       </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" id="arrangeAlbums">
         <li>
           <button
             class="dropdown-item"
@@ -27,7 +26,7 @@
             (click)="arrangeBy('name', 'desc')"
             type="button"
           >
-            Name
+            Alphabetical order
           </button>
         </li>
         <li>
@@ -56,12 +55,22 @@
     </div>
   </div>
   <button
+    id="albumBtn"
     data-bs-toggle="modal"
     data-bs-target="#modal"
     class="btn btn-outline-primary"
     style="width: 100px"
   >
-    Upload
+    + Album
+  </button>
+  <button
+    id="backBtn"
+    class="btn btn-outline-success"
+    style="width: 100px"
+    [style.display]="showBackButton ? 'block' : 'none'"
+    (click)="goBack()"
+  >
+    <- Back
   </button>
 </div>
 
@@ -81,41 +90,17 @@
     <div class="modal-content" style="width: auto">
       <div class="modal-body">
         <div>
-          <form id="form">
-            <div class="text-danger mb-1" id="imageError"></div>
-            <div
-              class="form-group"
-              style="margin-bottom: 15px"
-              id="chooseImg"
-              [hidden]="imageUrl"
-            >
-              <label for="">Image</label>
-              <input
-                type="file"
-                id="image"
-                class="form-control"
-                name="image"
-                (change)="showImage($event)"
-              />
-            </div>
-            <div [hidden]="!imageUrl">
-              <div class="d-flex justify-content-between" id="imageDiv">
-                <img id="img" [src]="imageUrl" alt="" />
-                <button
-                  type="button"
-                  class="btn-close"
-                  (click)="removeImage()"
-                ></button>
-              </div>
-            </div>
+          <form #albumForm="ngForm" id="form">
             <div class="form-group">
-              <label for="">Name (Optional)</label>
+              <label for="">Name</label>
               <input
                 type="text"
                 id="name"
                 class="form-control"
                 name="name"
-                placeholder="Enter a small description"
+                placeholder="Enter album name"
+                [(ngModel)]="albumName"
+                required
               />
             </div>
           </form>
@@ -124,11 +109,11 @@
       <div class="modal-footer">
         <button
           type="button"
-          (click)="upload()"
           class="btn btn-primary"
+          (click)="createAlbum()"
           data-bs-dismiss="modal"
         >
-          Upload
+          Create
         </button>
       </div>
     </div>
@@ -137,13 +122,13 @@
 
 <div class="container mt-5">
   <div class="row mb-5" id="row">
-    <app-photocard
-      *ngFor="let card of photoCards"
-      [photo]="card"
+    <app-albumcard
+      *ngFor="let album of albums"
+      [album]="album"
       class="col-auto"
       style="margin-bottom: 15px"
-      (imageEditted)="arrangeBy(arrange, order)"
-    ></app-photocard>
+      (albumSelected)="onAlbumSelected($event)"
+      (albumEdited)="loadAlbums()"
+    ></app-albumcard>
   </div>
 </div>
-<!-- </div> -->
