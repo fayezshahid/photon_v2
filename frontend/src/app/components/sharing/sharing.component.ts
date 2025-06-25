@@ -47,7 +47,7 @@ export class SharingComponent implements OnInit, OnDestroy {
   sharedImages: SharedImage[] = [
     {
       id: 1,
-      image: 'favicon.webp',
+      image: 'assets/favicon.webp',
       name: 'Sunset Photo',
       user_id: 4,
       userEmail: 'friend1@example.com',
@@ -56,7 +56,7 @@ export class SharingComponent implements OnInit, OnDestroy {
     },
     {
       id: 2,
-      image: 'favicon.webp',
+      image: 'assets/favicon.webp',
       name: 'Mountain View',
       user_id: 5,
       userEmail: 'friend2@example.com',

@@ -21,7 +21,7 @@ export class PhotoService {
     {
       id: 1,
       name: 'Photo 1',
-      url: 'favicon.webp',
+      url: 'assets/favicon.webp',
       date: '6/9/2024, 4:48:51 PM',
       size: 10300,
       isFavourite: false,
@@ -32,7 +32,7 @@ export class PhotoService {
     {
       id: 2,
       name: 'Photo 2',
-      url: 'favicon.webp',
+      url: 'assets/favicon.webp',
       date: '6/9/2024, 4:48:52 PM',
       size: 11111,
       isFavourite: false,
@@ -43,7 +43,7 @@ export class PhotoService {
     {
       id: 3,
       name: 'Photo 3',
-      url: 'favicon.webp',
+      url: 'assets/favicon.webp',
       date: '6/9/2024, 4:48:53 PM',
       size: 20000,
       isFavourite: false,
@@ -54,7 +54,7 @@ export class PhotoService {
     {
       id: 4,
       name: 'Photo 4',
-      url: 'favicon.webp',
+      url: 'assets/favicon.webp',
       date: '6/9/2024, 4:48:54 PM',
       size: 15000,
       isFavourite: false,
