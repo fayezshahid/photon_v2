@@ -35,6 +35,7 @@ export class AlbumComponent implements OnInit, OnDestroy {
   loadAlbums(): void {
     this.subscription.add(
       this.albumService.getAlbums().subscribe(albums => {
+        console.log('Albums loaded:', albums);
         this.albums = this.albumService.sortAlbums(albums, this.arrange, this.order);
       })
     );
@@ -42,15 +43,23 @@ export class AlbumComponent implements OnInit, OnDestroy {
 
   createAlbum(): void {
     if (this.albumName.trim()) {
-      const newAlbum: Omit<Album, 'id'> = {
-        name: this.albumName.trim(),
-        date: new Date().toISOString(),
-        size: 0
-      };
+      // const newAlbum: Omit<Album, 'id'> = {
+      //   name: this.albumName.trim(),
+      //   createdAt: new Date().toISOString(),
+      //   size: 0
+      // };
 
-      this.albumService.addAlbum(newAlbum);
-      this.albumName = '';
-      this.loadAlbums();
+      this.albumService.addAlbum(this.albumName.trim()).subscribe({
+        next: () => {
+          this.loadAlbums(); // Reload albums after creation
+          this.albumName = ''; // Clear input field
+        },
+        error: (error) => {
+          console.error('Error creating album:', error);
+        }
+      });
+      // this.albumName = '';
+      // this.loadAlbums();
     }
   }
 

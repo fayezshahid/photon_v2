@@ -35,6 +35,7 @@ export class GalleryComponent {
   loadActivePhotos(): void {
     this.subscription.add(
       this.photoService.getActivePhotos().subscribe(photos => {
+        console.log('Active photos loaded:', photos);
         this.photoCards = this.photoService.sortPhotos(photos, this.arrange, this.order);
       })
     );
@@ -47,20 +48,23 @@ export class GalleryComponent {
     const name = formData.get('name') as string;
     const image = formData.get('image') as File;
 
-    const newPhoto: Omit<Photo, 'id'> = {
-      name: name,
-      url: image.name,
-      date: new Date().toLocaleString(),
-      size: image.size,
-      isFavourite: false,
-      isArchived: false,
-      isDeleted: false,
-      albumId: null,
-    };
+    if (!image) {
+      alert('Please select an image to upload');
+      return;
+    }
 
-    this.photoService.addPhoto(newPhoto);
-    this.removeImage();
-    form.reset();
+    this.photoService
+      .addPhoto({ name: name, image: image })
+      .subscribe({
+        next: () => {
+          this.loadActivePhotos(); // reload photos after upload
+          this.removeImage();
+          form.reset();
+        },
+        error: (err) => {
+          console.error('Upload failed', err);
+        },
+      });
   }
 
   arrangeBy(arrange: string, order: string) {

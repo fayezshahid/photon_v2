@@ -1,33 +1,51 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './signup.component.html',
-  styleUrl: './signup.component.css'
+  styleUrls: ['./signup.component.css']
 })
 export class SignupComponent {
   formData = {
-    firstname: '',
-    lastname: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     password_confirmation: ''
   };
 
+  errorMessage = '';
+
+  constructor(private authService: AuthService, private router: Router) {}
+
   onSubmit() {
+    this.errorMessage = '';
+
     if (this.formData.password !== this.formData.password_confirmation) {
-      alert('Passwords do not match.');
+      this.errorMessage = 'Passwords do not match.';
       return;
     }
 
-    // Here you can send `formData` to your API or service
-    console.log('Form Submitted:', this.formData);
+    const payload = {
+      firstName: this.formData.firstName,
+      lastName: this.formData.lastName,
+      email: this.formData.email,
+      password: this.formData.password,
+    };
 
-    // Reset the form or navigate to another page if needed
+    this.authService.register(payload).subscribe({
+      next: () => {
+        this.router.navigate(['/photos']);
+      },
+      error: (err) => {
+        this.errorMessage = err?.error?.message || 'Signup failed. Please try again.';
+      }
+    });
   }
 }

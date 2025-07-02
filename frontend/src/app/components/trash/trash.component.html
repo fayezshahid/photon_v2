@@ -70,6 +70,7 @@
       [photo]="card"
       class="col-auto"
       style="margin-bottom: 15px"
+      (imageEditted)="loadDeletedPhotos()"
       (permanentlyDeletePhoto)="permanentlyDeletePhoto(card.id)"
     ></app-photocard>
   </div>

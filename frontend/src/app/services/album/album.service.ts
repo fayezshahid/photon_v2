@@ -1,109 +1,95 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export interface Album {
   id: number;
   name: string;
-  date: string;
+  createdAt: string;
+  updatedAt: string;
   size: number;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AlbumService {
-  private albums: Album[] = [];
-  private albumsSubject = new BehaviorSubject<Album[]>([]);
-  private nextId = 1;
+  private baseUrl = 'http://localhost:8080/api/albums';
+  private albumImageUrl = 'http://localhost:8080/api/album-images';
 
-  constructor() {
-    // Initialize with some sample data if needed
-    this.loadSampleData();
-  }
-
-  private loadSampleData(): void {
-    const sampleAlbums: Album[] = [
-      {
-        id: 1,
-        name: 'Vacation 2024',
-        date: new Date().toISOString(),
-        size: 25600000 // 25.6 MB
-      },
-      {
-        id: 2,
-        name: 'Family Photos',
-        date: new Date(Date.now() - 86400000).toISOString(), // Yesterday
-        size: 45300000 // 45.3 MB
-      }
-    ];
-    
-    this.albums = sampleAlbums;
-    this.nextId = 3;
-    this.albumsSubject.next([...this.albums]);
-  }
+  constructor(private http: HttpClient) {}
 
   getAlbums(): Observable<Album[]> {
-    return this.albumsSubject.asObservable();
+    return this.http.get<Album[]>(this.baseUrl);
   }
 
-  addAlbum(albumData: Omit<Album, 'id'>): void {
-    const newAlbum: Album = {
-      ...albumData,
-      id: this.nextId++
-    };
-    
-    this.albums.push(newAlbum);
-    this.albumsSubject.next([...this.albums]);
+  addAlbum(name: string): Observable<any> {
+    const params = new HttpParams().set('name', name);
+    return this.http.post(this.baseUrl, null, { params });
   }
 
-  updateAlbum(id: number, albumData: Partial<Album>): void {
-    const index = this.albums.findIndex(album => album.id === id);
-    if (index !== -1) {
-      this.albums[index] = { ...this.albums[index], ...albumData };
-      this.albumsSubject.next([...this.albums]);
-    }
+  updateAlbum(id: number, name: string): Observable<any> {
+    const params = new HttpParams().set('name', name);
+    return this.http.put(`${this.baseUrl}/${id}`, null, { params });
   }
 
-  deleteAlbum(id: number): void {
-    this.albums = this.albums.filter(album => album.id !== id);
-    this.albumsSubject.next([...this.albums]);
+  deleteAlbum(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${id}`);
   }
 
-  getAlbumById(id: number): Album | undefined {
-    return this.albums.find(album => album.id === id);
+  getAlbumById(albumId: number): Observable<Album> {
+    return this.http.get<Album>(`${this.baseUrl}/${albumId}`);
   }
 
   sortAlbums(albums: Album[], sortBy: string, order: string): Album[] {
-    const sorted = [...albums].sort((a, b) => {
+    return [...albums].sort((a, b) => {
       let comparison = 0;
-      
+
       switch (sortBy.toLowerCase()) {
         case 'name':
           comparison = a.name.localeCompare(b.name);
           break;
         case 'date':
-          comparison = new Date(a.date).getTime() - new Date(b.date).getTime();
+          comparison = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
           break;
         case 'size':
           comparison = a.size - b.size;
           break;
         default:
-          comparison = new Date(a.date).getTime() - new Date(b.date).getTime();
+          comparison = 0;
       }
-      
+
       return order === 'asc' ? comparison : -comparison;
     });
-    
-    return sorted;
   }
 
   formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
-    
+
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  // Album-image operations
+
+  addImageToAlbum(albumId: number, imageId: number): Observable<any> {
+    const params = new HttpParams()
+      .set('albumId', albumId.toString())
+      .set('imageId', imageId.toString());
+    return this.http.post(`${this.albumImageUrl}/add`, null, { params });
+  }
+
+  removeImageFromAlbum(albumId: number, imageId: number): Observable<any> {
+    const params = new HttpParams()
+      .set('albumId', albumId.toString())
+      .set('imageId', imageId.toString());
+    return this.http.delete(`${this.albumImageUrl}/remove`, { params });
+  }
+
+  getImagesInAlbum(albumId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.albumImageUrl}/album/${albumId}`);
   }
 }

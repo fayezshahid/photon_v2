@@ -11,15 +11,15 @@
               <input
                 type="text"
                 class="form-control"
-                name="firstname"
+                name="firstName"
                 placeholder="First Name"
                 required
-                [(ngModel)]="formData.firstname"
-                #firstname="ngModel"
+                [(ngModel)]="formData.firstName"
+                #firstName="ngModel"
               />
             </div>
             <div
-              *ngIf="firstname.invalid && firstname.touched"
+              *ngIf="firstName.invalid && firstName.touched"
               class="text-danger"
             >
               First name is required.
@@ -32,15 +32,15 @@
               <input
                 type="text"
                 class="form-control"
-                name="lastname"
+                name="lastName"
                 placeholder="Last Name"
                 required
-                [(ngModel)]="formData.lastname"
-                #lastname="ngModel"
+                [(ngModel)]="formData.lastName"
+                #lastName="ngModel"
               />
             </div>
             <div
-              *ngIf="lastname.invalid && lastname.touched"
+              *ngIf="lastName.invalid && lastName.touched"
               class="text-danger"
             >
               Last name is required.

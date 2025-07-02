@@ -1,48 +1,48 @@
 <!-- <div class="col-auto" style="margin-bottom: 15px;"> -->
 <div class="card">
-  <img [src]="photo.url" class="card-img-top" alt="{{ photo.name }}" />
+  <img [src]="imageUrl" class="card-img-top" alt="{{ photo.name }}" />
   <div class="card-body">
     <div class="d-flex justify-content-between align-items-center">
       <h5 class="card-title" style="margin-bottom: 0">{{ photo.name }}</h5>
-      <a *ngIf="!photo.isDeleted && !isInAlbumRoute()">
+      <a *ngIf="!photo.inTrash && !isInAlbumRoute()">
         <i class="fa-solid fa-plus" data-bs-toggle="modal" attr.data-bs-target="#albumModal{{ photo.id }}"></i>
       </a>
-      <a *ngIf="!photo.isDeleted && isInAlbumRoute()" (click)="removeFromAlbum()">
-        <i class="fa-solid"></i>
+      <a *ngIf="!photo.inTrash && isInAlbumRoute()" (click)="removeImagefromAlbum.emit()">
+        <i class="fa-solid fa-x"></i>
       </a>
-      <a *ngIf="!photo.isDeleted" data-bs-toggle="modal" attr.data-bs-target="#modal{{ photo.id }}">
+      <a *ngIf="!photo.inTrash" data-bs-toggle="modal" attr.data-bs-target="#modal{{ photo.id }}">
         <i class="fa-solid fa-pencil"></i>
       </a>
       <a (click)="toggleDelete()">
         <i 
           class="fa-solid"
-          [ngClass]="photo.isDeleted ? 'fa-rotate-left' : 'fa-trash'">
+          [ngClass]="photo.inTrash ? 'fa-rotate-left' : 'fa-trash'">
         </i>
       </a>
     </div>
-    <div *ngIf="!photo.isDeleted" class="d-flex justify-content-between span mt-3">
+    <div *ngIf="!photo.inTrash" class="d-flex justify-content-between span mt-3">
       <a (click)="toggleArchive()">
         <i 
           class="fa-solid" 
-          [ngClass]="photo.isArchived ? 'fa-box-open' : 'fa-box-archive'">
+          [ngClass]="photo.archived ? 'fa-box-open' : 'fa-box-archive'">
         </i>
       </a>
       <a (click)="toggleFavourites()">
         <i
-          [ngClass]="photo.isFavourite == 1 ? 'fa-solid' : 'fa-regular'"
+          [ngClass]="photo.favourite ? 'fa-solid' : 'fa-regular'"
           class="fa-star"
         ></i>
       </a>
       <a data-bs-toggle="modal" attr.data-bs-target="#shareModal{{ photo.id }}">
         <i class="fa-solid fa-share"></i>
       </a>
-      <span style="font-size: 12px">{{ photo.date }}</span>
+      <span style="font-size: 12px">{{ photo.createdAt | date:'MMM d, y h:mm a' }}</span>
     </div>
-    <div *ngIf="photo.isDeleted" class="d-flex justify-content-between span mt-3">
+    <div *ngIf="photo.inTrash" class="d-flex justify-content-between span mt-3">
       <a (click)="permanentlyDeletePhoto.emit()">
         <i class="fa-solid fa-trash"></i>
       </a>
-      <span style="font-size: 12px">{{ photo.date }}</span>
+      <span style="font-size: 12px">{{ photo.createdAt | date:'MMM d, y h:mm a' }}</span>
     </div>
   </div>
 </div>
@@ -165,7 +165,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="albumModalLabel">
-          {{ isInAlbum() ? 'Remove from Album' : 'Add to Album' }}
+          Add or Remove from Album
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -179,12 +179,13 @@
             <div>{{ album.name }}</div>
             <div>
               <button class="btn btn-sm" 
-                      [ngClass]="photo.albumId === album.id ? 'btn-danger' : 'btn-outline-primary'"
+                      [ngClass]="photo.albumIds?.includes(album.id) ? 'btn-danger' : 'btn-outline-primary'"
                       (click)="toggleAlbum(album.id)" 
                       data-bs-dismiss="modal">
-                <i class="fa-solid" [ngClass]="photo.albumId === album.id ? 'fa-minus' : 'fa-plus'"></i>
-                {{ photo.albumId === album.id ? 'Remove' : 'Add' }}
+                <i class="fa-solid" [ngClass]="photo.albumIds?.includes(album.id) ? 'fa-minus' : 'fa-plus'"></i>
+                {{ photo.albumIds?.includes(album.id) ? 'Remove' : 'Add' }}
               </button>
+
             </div>
           </div>
           <div *ngIf="filteredAlbums.length === 0" class="text-center text-muted">

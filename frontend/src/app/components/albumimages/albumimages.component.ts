@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { PhotoCardComponent } from '../photocard/photocard.component';
 import { PhotoService, Photo } from '../../services/photo/photo.service';
+import { AlbumService, Album } from '../../services/album/album.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -21,7 +22,7 @@ export class AlbumImagesComponent {
   
   private subscription: Subscription = new Subscription();
 
-  constructor(private photoService: PhotoService, private route: ActivatedRoute) {}
+  constructor(private photoService: PhotoService, private albumService: AlbumService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     // Get album ID from route parameter
@@ -38,7 +39,7 @@ export class AlbumImagesComponent {
     this.photoCards = [];
     
     // Load photos for the specific album
-    const photoSub = this.photoService.getPhotosByAlbumId(this.albumId).subscribe({
+    const photoSub = this.albumService.getImagesInAlbum(this.albumId).subscribe({
       next: (photos: Photo[]) => {
         this.photoCards = photos;
         // Apply current sorting
@@ -51,6 +52,17 @@ export class AlbumImagesComponent {
     });
 
     this.subscription.add(photoSub);
+  }
+
+  removeImagefromAlbum(photoId: number): void {
+    this.albumService.removeImageFromAlbum(this.albumId, photoId).subscribe({
+        next: (response) => {
+          this.loadAlbumPhotos();
+        },
+        error: (error) => {
+          console.error('Error: ', error);
+        }
+      });
   }
 
   arrangeBy(arrange: string, order: string): void {

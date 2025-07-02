@@ -85,7 +85,7 @@ export class ExploreComponent {
     this.subscription.add(
       this.photoService.getActivePhotos().subscribe(photos => {
         this.photoCards = photos.filter(photo => {
-          const photoDate = new Date(photo.date);
+          const photoDate = new Date(photo.updatedAt);
           return photoDate >= fromDate && photoDate <= toDate;
         });
       })

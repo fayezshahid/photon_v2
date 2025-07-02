@@ -44,7 +44,16 @@ export class TrashComponent {
   }
 
   permanentlyDeletePhoto(photoId: number): void {
-    this.photoService.permanentlyDeletePhoto(photoId);
+    this.photoService.permanentlyDeletePhoto(photoId).subscribe({
+      next: (response) => {
+        // this.photo.isDeleted = !this.photo.isDeleted;
+        // this.imageEditted.emit();
+        this.loadDeletedPhotos();
+      },
+      error: (error) => {
+        console.error('Error toggling delete:', error);
+      }
+    });;
   }
 
   emptyTrash(): void {

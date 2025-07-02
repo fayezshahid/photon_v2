@@ -30,9 +30,7 @@ export class AlbumCardComponent {
 
   updateAlbum(id: number): void {
    if (this.editAlbumName.trim()) {
-      this.albumService.updateAlbum(id, { 
-        name: this.editAlbumName.trim() 
-      });
+      this.albumService.updateAlbum(id, this.editAlbumName.trim());
       this.albumEdited.emit(); // Notify parent component
     }
   }
@@ -43,7 +41,7 @@ export class AlbumCardComponent {
   }
 
   formatSize(bytes: number): string {
-    return this.albumService.formatFileSize(bytes);
+    return this.albumService.formatFileSize(bytes || 0);
   }
 
   formatDate(dateString: string): string {
