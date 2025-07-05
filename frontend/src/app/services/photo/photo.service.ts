@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { IMAGES_API } from '../../constants/api-endpoints';
+import { IMAGES_API } from '../../constants/endpoints';
 
 export interface Photo {
   id: number;

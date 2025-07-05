@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ALBUMS_API, ALBUM_IMAGES_API } from '../../constants/api-endpoints';
+import { ALBUMS_API, ALBUM_IMAGES_API } from '../../constants/endpoints';
 
 export interface Album {
   id: number;

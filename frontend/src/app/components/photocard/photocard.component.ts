@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PhotoService, Photo } from '../../services/photo/photo.service';
 import { AlbumService, Album } from '../../services/album/album.service';
-import { environment } from '../../../environments/environment';
+import { IMAGE_UPLOAD_URL } from '../../constants/endpoints';
 
 interface Friend {
   id: number;
@@ -30,7 +30,7 @@ export class PhotoCardComponent {
   @Output() permanentlyDeletePhoto = new EventEmitter<void>();
   @Output() removeImagefromAlbum = new EventEmitter<void>();
 
-  baseImageUrl: string = environment.imageUploadUrl;
+  baseImageUrl: string = IMAGE_UPLOAD_URL;
   imageUrl: string | ArrayBuffer | null = null;
 
   // Sample data for friends and albums

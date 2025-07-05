@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { AUTH_API } from '../../constants/api-endpoints';
+import { AUTH_API } from '../../constants/endpoints';
 
 interface AuthResponse {
   token: string; // Adjust if your API returns differently
