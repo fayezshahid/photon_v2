@@ -97,8 +97,8 @@ Photon, a robust photo management platform built with Spring Boot 3 and Angular.
    ```typescript
    export const environment = {
      production: false,
-     apiUrl: 'http://localhost:8080/api',
-     uploadUrl: 'http://localhost:8080/images'
+     apiBaseUrl: 'http://localhost:8080/api',
+     imageUploadUrl: 'http://localhost:8080/images'
    };
    ```
 
