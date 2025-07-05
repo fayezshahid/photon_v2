@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ALBUMS_API, ALBUM_IMAGES_API } from '../../constants/api-endpoints';
 
 export interface Album {
   id: number;
@@ -14,31 +15,31 @@ export interface Album {
   providedIn: 'root',
 })
 export class AlbumService {
-  private baseUrl = 'http://localhost:8080/api/albums';
-  private albumImageUrl = 'http://localhost:8080/api/album-images';
+  private albumUrl = ALBUMS_API;
+  private albumImageUrl = ALBUM_IMAGES_API;
 
   constructor(private http: HttpClient) {}
 
   getAlbums(): Observable<Album[]> {
-    return this.http.get<Album[]>(this.baseUrl);
+    return this.http.get<Album[]>(this.albumUrl);
   }
 
   addAlbum(name: string): Observable<any> {
     const params = new HttpParams().set('name', name);
-    return this.http.post(this.baseUrl, null, { params });
+    return this.http.post(this.albumUrl, null, { params });
   }
 
   updateAlbum(id: number, name: string): Observable<any> {
     const params = new HttpParams().set('name', name);
-    return this.http.put(`${this.baseUrl}/${id}`, null, { params });
+    return this.http.put(`${this.albumUrl}/${id}`, null, { params });
   }
 
   deleteAlbum(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`);
+    return this.http.delete(`${this.albumUrl}/${id}`);
   }
 
   getAlbumById(albumId: number): Observable<Album> {
-    return this.http.get<Album>(`${this.baseUrl}/${albumId}`);
+    return this.http.get<Album>(`${this.albumUrl}/${albumId}`);
   }
 
   sortAlbums(albums: Album[], sortBy: string, order: string): Album[] {

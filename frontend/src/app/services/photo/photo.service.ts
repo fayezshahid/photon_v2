@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { IMAGES_API } from '../../constants/api-endpoints';
 
 export interface Photo {
   id: number;
@@ -19,7 +20,7 @@ export interface Photo {
   providedIn: 'root',
 })
 export class PhotoService {
-  private baseUrl = 'http://localhost:8080/api/images'; // Adjust URL as needed
+  private baseUrl = IMAGES_API // Adjust URL as needed
 
   constructor(private http: HttpClient) {}
 
