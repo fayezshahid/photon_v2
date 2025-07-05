@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PhotoService, Photo } from '../../services/photo/photo.service';
 import { AlbumService, Album } from '../../services/album/album.service';
+import { environment } from '../../../environments/environment';
 
 interface Friend {
   id: number;
@@ -29,7 +30,7 @@ export class PhotoCardComponent {
   @Output() permanentlyDeletePhoto = new EventEmitter<void>();
   @Output() removeImagefromAlbum = new EventEmitter<void>();
 
-  baseUrl: string = 'http://localhost:8080/images/';
+  baseImageUrl: string = environment.imageUploadUrl;
   imageUrl: string | ArrayBuffer | null = null;
 
   // Sample data for friends and albums
@@ -50,7 +51,7 @@ export class PhotoCardComponent {
   constructor(private photoService: PhotoService, private albumService: AlbumService, private router: Router) {}
 
   ngOnInit() {
-    this.imageUrl = this.baseUrl + this.photo.image;
+    this.imageUrl = this.baseImageUrl + this.photo.image;
     // console.log('Photo URL:', this.imageUrl);
     this.filteredShareFriends = [...this.friends];
     this.albumService.getAlbums().subscribe({
